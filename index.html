@@ -14,6 +14,10 @@
             --ball-bg: #f0f0f0;
             --toggle-bg: #cccccc;
             --toggle-knob: #ffffff;
+            --card-bg: #f8f9fa;
+            --card-border: #e0e0e0;
+            --input-bg: #ffffff;
+            --input-border: #cccccc;
         }
         :root[data-theme="dark"] {
             --bg: #1a1a2e;
@@ -24,23 +28,24 @@
             --ball-bg: #2e2e4e;
             --toggle-bg: #4a90e2;
             --toggle-knob: #ffffff;
+            --card-bg: #16213e;
+            --card-border: #2e2e4e;
+            --input-bg: #0f3460;
+            --input-border: #4a90e2;
         }
 
-        * { transition: background-color 0.3s, color 0.3s; }
+        * { transition: background-color 0.3s, color 0.3s, border-color 0.3s; box-sizing: border-box; }
 
         body {
             font-family: sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
+            padding: 40px 20px;
             background-color: var(--bg);
             color: var(--text);
-        }
-
-        .container {
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         /* 다크모드 토글 */
@@ -62,11 +67,7 @@
             cursor: pointer;
         }
 
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
 
         .slider {
             position: absolute;
@@ -88,11 +89,11 @@
             transition: 0.3s;
         }
 
-        input:checked + .slider::before {
-            transform: translateX(24px);
-        }
+        input:checked + .slider::before { transform: translateX(24px); }
 
-        /* 버튼 */
+        /* 로또 섹션 */
+        .lotto-section { text-align: center; margin-bottom: 60px; }
+
         #generate-btn {
             margin-top: 10px;
             padding: 10px 24px;
@@ -104,11 +105,8 @@
             cursor: pointer;
         }
 
-        #generate-btn:hover {
-            background-color: var(--btn-hover);
-        }
+        #generate-btn:hover { background-color: var(--btn-hover); }
 
-        /* 번호 공 */
         #lotto-numbers {
             display: flex;
             gap: 10px;
@@ -128,6 +126,80 @@
             font-weight: bold;
             color: var(--text);
         }
+
+        /* 제휴문의 폼 */
+        .contact-section {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .contact-section h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .contact-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 14px;
+            background-color: var(--input-bg);
+            color: var(--text);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--btn-bg);
+        }
+
+        .form-group textarea { resize: vertical; min-height: 100px; }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: var(--btn-bg);
+            color: var(--btn-text);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+
+        .submit-btn:hover { background-color: var(--btn-hover); }
+
+        .success-msg {
+            display: none;
+            text-align: center;
+            padding: 16px;
+            color: #27ae60;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -140,27 +212,59 @@
         <span>🌙</span>
     </div>
 
-    <div class="container">
+    <!-- 로또 번호 생성기 -->
+    <div class="lotto-section">
         <h1>🎱 Lotto Number Generator</h1>
         <button id="generate-btn">Generate Numbers</button>
         <div id="lotto-numbers"></div>
     </div>
 
+    <!-- 제휴문의 폼 -->
+    <div class="contact-section">
+        <h2>🤝 제휴문의</h2>
+        <div class="contact-card">
+            <form id="contact-form" action="https://formspree.io/f/xjgaerbo" method="POST">
+                <div class="form-group">
+                    <label for="company">회사명 / 이름</label>
+                    <input type="text" id="company" name="company" placeholder="회사명 또는 이름을 입력하세요" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">이메일</label>
+                    <input type="email" id="email" name="email" placeholder="example@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="type">문의 유형</label>
+                    <select id="type" name="type">
+                        <option value="광고/마케팅">광고 / 마케팅</option>
+                        <option value="콘텐츠 제휴">콘텐츠 제휴</option>
+                        <option value="기술 협력">기술 협력</option>
+                        <option value="기타">기타</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="message">문의 내용</label>
+                    <textarea id="message" name="message" placeholder="제휴 관련 내용을 자유롭게 작성해 주세요." required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">문의 보내기</button>
+            </form>
+            <div class="success-msg" id="success-msg">✅ 문의가 성공적으로 전송되었습니다. 감사합니다!</div>
+        </div>
+    </div>
+
     <script>
+        // 테마 토글
         const checkbox = document.getElementById('theme-checkbox');
         const html = document.documentElement;
-
-        // 저장된 테마 불러오기
         const savedTheme = localStorage.getItem('theme') || 'light';
         html.setAttribute('data-theme', savedTheme);
         checkbox.checked = savedTheme === 'dark';
-
         checkbox.addEventListener('change', () => {
             const theme = checkbox.checked ? 'dark' : 'light';
             html.setAttribute('data-theme', theme);
             localStorage.setItem('theme', theme);
         });
 
+        // 로또 번호 생성
         document.getElementById('generate-btn').addEventListener('click', () => {
             const lottoNumbersDiv = document.getElementById('lotto-numbers');
             lottoNumbersDiv.innerHTML = '';
@@ -173,6 +277,29 @@
                 numberDiv.classList.add('number');
                 numberDiv.textContent = number;
                 lottoNumbersDiv.appendChild(numberDiv);
+            }
+        });
+
+        // 폼 제출 (AJAX)
+        const form = document.getElementById('contact-form');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = form.querySelector('.submit-btn');
+            btn.textContent = '전송 중...';
+            btn.disabled = true;
+
+            const res = await fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (res.ok) {
+                form.style.display = 'none';
+                document.getElementById('success-msg').style.display = 'block';
+            } else {
+                btn.textContent = '전송 실패. 다시 시도해 주세요.';
+                btn.disabled = false;
             }
         });
     </script>
